@@ -18,7 +18,7 @@ namespace Hybel.ExtensionMethods
         /// <param name="list">List.</param>
         /// <param name="index">Index of the item that should be removed.</param>
         /// <returns>Removed item.</returns>
-        public static T RemoveAndReturn<T>(this IList<T> list, int index)
+        public static T RemoveAndReturn<T>(this List<T> list, int index)
         {
             T item = list[index];
             list.RemoveAt(index);
@@ -30,7 +30,7 @@ namespace Hybel.ExtensionMethods
         /// </summary>
         /// <typeparam name="T">Generic type.</typeparam>
         /// <param name="list">List.</param>
-        public static void Shuffle<T>(this IList<T> list)
+        public static void Shuffle<T>(this List<T> list)
         {
             System.Random rng = new System.Random();
             int number = list.Count;
@@ -50,7 +50,7 @@ namespace Hybel.ExtensionMethods
         /// <typeparam name="T">Generic type.</typeparam>
         /// <param name="list">List.</param>
         /// <returns>Random item from a list</returns>
-        public static T RandomItem<T>(this IList<T> list)
+        public static T RandomItem<T>(this List<T> list)
         {
             if (list.Count == 0)
                 throw new IndexOutOfRangeException("Cannot select a random item from an empty list");
@@ -63,7 +63,7 @@ namespace Hybel.ExtensionMethods
         /// <typeparam name="T">Generic type.</typeparam>
         /// <param name="list">List.</param>
         /// <returns>Removed item.</returns>
-        public static T RemoveRandom<T>(this IList<T> list)
+        public static T RemoveRandom<T>(this List<T> list)
         {
             if (list.Count == 0)
                 throw new IndexOutOfRangeException("Cannot remove a random item from an empty list");
@@ -75,7 +75,7 @@ namespace Hybel.ExtensionMethods
         /// <summary>
         /// Checks if a statement is true for at least one item in the list.
         /// </summary>
-        public static bool TrueForOne<T>(this IList<T> list, Func<T, bool> predicate)
+        public static bool TrueForOne<T>(this List<T> list, Func<T, bool> predicate)
         {
             foreach (T item in list)
                 if (predicate.Invoke(item))
@@ -87,7 +87,7 @@ namespace Hybel.ExtensionMethods
         /// <summary>
         /// Remove duplicate entries in the list.
         /// </summary>
-        public static IList<T> RemoveDoubles<T>(this IList<T> list) => list.Distinct().ToList();
+        public static List<T> RemoveDoubles<T>(this List<T> list) => list.Distinct().ToList();
 
         /// <summary>
         /// Foreach <typeparamref name="T1"/> in the list find the first item in a list the <typeparamref name="T1"/> contains.
@@ -98,7 +98,7 @@ namespace Hybel.ExtensionMethods
         /// <param name="listGetter">How to access the sub-list from the parent list.</param>
         /// <param name="match">Predicate to check for when searching.</param>
         /// <returns>The first <typeparamref name="T2"/> found.</returns>
-        public static T2 ForEachFind<T1, T2>(this IList<T1> listOfItemsWithList, Func<T1, IList<T2>> listGetter, Predicate<T2> match)
+        public static T2 ForEachFind<T1, T2>(this List<T1> listOfItemsWithList, Func<T1, List<T2>> listGetter, Predicate<T2> match)
         {
             foreach (T1 itemWithList in listOfItemsWithList)
                 foreach (var item in listGetter(itemWithList))
@@ -117,7 +117,7 @@ namespace Hybel.ExtensionMethods
         /// <param name="listGetter">How to access the sub-list from the parent list.</param>
         /// <param name="match">Predicate to check for when searching.</param>
         /// <returns>All <typeparamref name="T2"/>s found.</returns>
-        public static List<T2> ForEachFindAll<T1, T2>(this IList<T1> listOfItemsWithList, Func<T1, IList<T2>> listGetter, Predicate<T2> match)
+        public static List<T2> ForEachFindAll<T1, T2>(this List<T1> listOfItemsWithList, Func<T1, List<T2>> listGetter, Predicate<T2> match)
         {
             List<T2> foundItems = new List<T2>();
 
@@ -132,13 +132,13 @@ namespace Hybel.ExtensionMethods
         /// <summary>
         /// Checks if the list is null or has a count of zero.
         /// </summary>
-        public static bool IsNullOrEmpty<T>(this IList<T> list) =>
+        public static bool IsNullOrEmpty<T>(this List<T> list) =>
             list == null || list.Count == 0;
 
         /// <summary>
         /// Create a new list containing the same objects as <paramref name="list"/>. Not a deep copy so all child objects are copied as references unless they're value types.
         /// </summary>
-        public static List<T> ToNewList<T>(this IList<T> list)
+        public static List<T> ToNewList<T>(this List<T> list)
         {
             var clone = new List<T>();
             clone.AddRange(list);
@@ -156,6 +156,90 @@ namespace Hybel.ExtensionMethods
                 list.Add(default);
 
             return list;
+        }
+
+        /// <summary>
+        /// Filters the <paramref name="list"/> using the <paramref name="filter"/> to determine what is kept.
+        /// </summary>
+        public static List<T> Filter<T>(this List<T> list, Func<T, bool> filter)
+        {
+            if (list is null)
+                throw new ArgumentNullException(nameof(list));
+
+            if (filter is null)
+                throw new ArgumentNullException(nameof(filter));
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                T item = list[i];
+
+                if (!filter(item))
+                    list.Remove(item);
+            }
+
+            return list;
+        }
+
+        /// <summary>
+        /// Filters the <paramref name="list"/> using the <paramref name="filter"/> to determine what is kept.
+        /// </summary>
+        public static List<T> Filter<T>(this List<T> list, Func<T, int, bool> filter)
+        {
+            if (list is null)
+                throw new ArgumentNullException(nameof(list));
+
+            if (filter is null)
+                throw new ArgumentNullException(nameof(filter));
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                T item = list[i];
+
+                if (!filter(item, i))
+                    list.Add(item);
+            }
+
+            return list;
+        }
+
+        /// <summary>
+        /// Maps the <paramref name="list"/> using the <paramref name="mapper"/> to determine how to alter the data.
+        /// <para>Allocates a new List.</para>
+        /// </summary>
+        public static List<TResult> Map<T, TResult>(this List<T> list, Func<T, TResult> mapper)
+        {
+            if (list is null)
+                throw new ArgumentNullException(nameof(list));
+
+            if (mapper is null)
+                throw new ArgumentNullException(nameof(mapper));
+
+            var mapped = new List<TResult>(list.Count);
+
+            for (int i = 0; i < list.Count; i++)
+                mapped[i] = mapper(list[i]);
+
+            return mapped;
+        }
+
+        /// <summary>
+        /// Maps the <paramref name="list"/> using the <paramref name="mapper"/> to determine how to alter the data.
+        /// <para>Allocates a new List.</para>
+        /// </summary>
+        public static List<TResult> Map<T, TResult>(this List<T> list, Func<T, int, TResult> mapper)
+        {
+            if (list is null)
+                throw new ArgumentNullException(nameof(list));
+
+            if (mapper is null)
+                throw new ArgumentNullException(nameof(mapper));
+
+            var mapped = new List<TResult>(list.Count);
+
+            for (int i = 0; i < list.Count; i++)
+                mapped[i] = mapper(list[i], i);
+
+            return mapped;
         }
     }
 }

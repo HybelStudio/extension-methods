@@ -84,5 +84,19 @@ namespace Hybel.ExtensionMethods
         /// </summary>
         public static bool IsEven(this int value) =>
             value % 2 == 0;
+
+        public static int[,] MatrixMultiply(this int factor, int[,] matrix)
+        {
+            int xSize = matrix.GetLength(0);
+            int ySize = matrix.GetLength(1);
+
+            int[,] product = new int[xSize, ySize];
+
+            for (int x = 0; x < xSize; x++)
+                for (int y = 0; y < ySize; y++)
+                    product[x, y] = matrix[x, y] * factor;
+
+            return product;
+        }
     }
 }

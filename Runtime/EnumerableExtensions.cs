@@ -35,6 +35,30 @@ namespace Hybel.ExtensionMethods
             collection.Select(mapper);
 
         /// <summary>
+        /// This wraps the <see cref="Enumerable.SelectMany{TSource, TResult}(IEnumerable{TSource}, Func{TSource, IEnumerable{TResult}})"/> function and only exists to be more readable.
+        /// </summary>
+        public static IEnumerable<TResult> MapMany<T, TResult>(this IEnumerable<T> collection, Func<T, IEnumerable<TResult>> mapper) =>
+            collection.SelectMany(mapper);
+
+        /// <summary>
+        /// This wraps the <see cref="Enumerable.SelectMany{TSource, TResult}(IEnumerable{TSource}, Func{TSource, int, IEnumerable{TResult}})"/> function and only exists to be more readable.
+        /// </summary>
+        public static IEnumerable<TResult> MapMany<T, TResult>(this IEnumerable<T> collection, Func<T, int, IEnumerable<TResult>> mapper) =>
+            collection.SelectMany(mapper);
+
+        /// <summary>
+        /// This wraps the <see cref="Enumerable.SelectMany{TSource, TCollection, TResult}(IEnumerable{TSource}, Func{TSource, IEnumerable{TCollection}}, Func{TSource, TCollection, TResult})"/> function and only exists to be more readable.
+        /// </summary>
+        public static IEnumerable<IEnumerable<TResult>> MapMany<T, TCollection, TResult>(this IEnumerable<T> collection, Func<T, IEnumerable<TCollection>> collectionMapper, Func<T, TCollection, IEnumerable<TResult>> resultMapper) =>
+            collection.SelectMany(collectionMapper, resultMapper);
+
+        /// <summary>
+        /// This wraps the <see cref="Enumerable.SelectMany{TSource, TCollection, TResult}(IEnumerable{TSource}, Func{TSource, int, IEnumerable{TCollection}}, Func{TSource, TCollection, TResult})"/> function and only exists to be more readable.
+        /// </summary>
+        public static IEnumerable<IEnumerable<TResult>> MapMany<T, TCollection, TResult>(this IEnumerable<T> collection, Func<T, int, IEnumerable<TCollection>> collectionMapper, Func<T, TCollection, IEnumerable<TResult>> resultMapper) =>
+            collection.SelectMany(collectionMapper, resultMapper);
+
+        /// <summary>
         /// Run an action for each item in the <paramref name="collection"/>.
         /// </summary>
         /// <param name="action">Action to run on every item in the <paramref name="collection"/>.</param>
@@ -57,12 +81,9 @@ namespace Hybel.ExtensionMethods
         /// <returns>The merged collection.</returns>
         public static IEnumerable<T> Merge<T>(this IEnumerable<IEnumerable<T>> collectionOfCollections)
         {
-            List<T> list = new();
-
             foreach (IEnumerable<T> collection in collectionOfCollections)
-                list.AddRange(collection);
-
-            return list;
+                foreach (T item in collection)
+                    yield return item;
         }
 
         /// <summary>
@@ -79,7 +100,7 @@ namespace Hybel.ExtensionMethods
         {
             foreach (T item in collection)
             {
-                if (item == null)
+                if (item is null)
                     continue;
 
                 return item;
@@ -161,7 +182,7 @@ namespace Hybel.ExtensionMethods
             if (sectionSize <= 0)
                 throw new ArgumentOutOfRangeException(nameof(sectionSize), "Section size must be greater than zero.");
 
-            List<T> section = new List<T>(sectionSize).Populate();
+            IList<T> section = new List<T>(sectionSize).Populate();
             IEnumerator<T> enumerator = collection.GetEnumerator();
 
             for (int i = 0; true; i += sectionSize) // Scary infinite loop!
@@ -185,7 +206,7 @@ namespace Hybel.ExtensionMethods
                 yield return section;
             }
 
-        end:;
+            end:;
         }
 
         /// <summary>

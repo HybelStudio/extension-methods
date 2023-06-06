@@ -192,5 +192,33 @@ namespace Hybel.ExtensionMethods
         /// <para><b>Example:</b> A 1.5 <paramref name="multiplier"/> converts to +50 percentile difference.</para>
         /// </summary>
         public static float MultiplierToPercentileDifference(this float multiplier) => (-1f + multiplier) * 100f;
+
+        public static float[,] MatrixMultiply(this float factor, float[,] matrix)
+        {
+            int xSize = matrix.GetLength(0);
+            int ySize = matrix.GetLength(1);
+
+            float[,] product = new float[xSize, ySize];
+
+            for (int x = 0; x < xSize; x++)
+                for (int y = 0; y < ySize; y++)
+                    product[x, y] = matrix[x, y] * factor;
+
+            return product;
+        }
+
+        public static float[,] MatrixMultiply(this float factor, int[,] matrix)
+        {
+            int xSize = matrix.GetLength(0);
+            int ySize = matrix.GetLength(1);
+
+            float[,] product = new float[xSize, ySize];
+
+            for (int x = 0; x < xSize; x++)
+                for (int y = 0; y < ySize; y++)
+                    product[x, y] = matrix[x, y] * factor;
+
+            return product;
+        }
     }
 }

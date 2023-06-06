@@ -51,7 +51,7 @@ namespace Hybel.ExtensionMethods
         /// Make any <paramref name="item"/> iterable.
         /// </summary>
         /// <returns>An enumerable yielding the <paramref name="item"/>.</returns>
-        public static IEnumerable<T> Iterable<T>(this T item)
+        public static IEnumerable<T> Yield<T>(this T item)
         {
             yield return item;
         }
