@@ -23,6 +23,46 @@ namespace Hybel.ExtensionMethods
         }
 
         /// <summary>
+        /// Checks if the string contains any of the <paramref name="values"/> and outs the <paramref name="containedValue"/>.
+        /// </summary>
+        public static bool ContainsAny(this string @string, out string containedValue, params string[] values)
+        {
+            foreach (string value in values)
+            {
+                if (@string.Contains(value))
+                {
+                    containedValue = value;
+                    return true;
+                }
+            }
+
+            containedValue = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if the string contains any of the <paramref name="values"/>.
+        /// </summary>
+        public static bool ContainsAny(this string @string, params string[] values)
+        {
+            foreach (string value in values)
+                if (@string.Contains(value))
+                    return true;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Makes the <paramref name="input"/> more uniform by removing spaces and making all characters lower case.
+        /// </summary>
+        public static string MakeUniform(this string input) => input.RemoveSpaces().ToLower();
+        
+        /// <summary>
+        /// Appends the <paramref name="suffix"/> if the <paramref name="condition"/> is true, otherwise it does nothing;
+        /// </summary>
+        public static string AppendIf(this string @string, string suffix, bool condition) => condition ? @string + suffix : @string;
+        
+        /// <summary>
         /// Converts string to Unity's Keycode enumeration.
         /// Cannot convert the symbols \ (write 'backslash' instead) and " (write 'double quotes' instead).
         /// </summary>
@@ -301,40 +341,5 @@ namespace Hybel.ExtensionMethods
                 _ => KeyCode.None,
             };
         }
-
-        /// <summary>
-        /// Checks if the string contains any of the <paramref name="values"/> and outs the <paramref name="containedValue"/>.
-        /// </summary>
-        public static bool ContainsAny(this string @string, out string containedValue, params string[] values)
-        {
-            foreach (string value in values)
-            {
-                if (@string.Contains(value))
-                {
-                    containedValue = value;
-                    return true;
-                }
-            }
-
-            containedValue = null;
-            return false;
-        }
-
-        /// <summary>
-        /// Checks if the string contains any of the <paramref name="values"/>.
-        /// </summary>
-        public static bool ContainsAny(this string @string, params string[] values)
-        {
-            foreach (string value in values)
-                if (@string.Contains(value))
-                    return true;
-
-            return false;
-        }
-
-        /// <summary>
-        /// Makes the <paramref name="input"/> more uniform by removing spaces and making all characters lower case.
-        /// </summary>
-        public static string MakeUniform(this string input) => input.RemoveSpaces().ToLower();
     }
 }

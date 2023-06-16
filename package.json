@@ -1,7 +1,7 @@
 {
     "name": "com.hybelstudio.extension-methods",
     "displayName": "Extension Methods",
-    "description": "A growing collection of extentsion methods for C#.",
+    "description": "A growing collection of extension methods for C#.",
     "version": "1.0.0",
     "unity": "2021.3",
     "author": {
