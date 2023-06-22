@@ -411,6 +411,20 @@ namespace Hybel.ExtensionMethods
 
             return builder.ToString();
         }
+        
+        /// <summary>
+        /// Put the <paramref name="collection"/> into some object. This simply calls the <paramref name="mapper"/> function with the <paramref name="collection"/> as the argument. 
+        /// </summary>
+        public static T Into<T>(this IEnumerable<T> collection, Func<IEnumerable<T>, T> mapper)
+        {
+            if (collection is null)
+                throw new ArgumentNullException(nameof(collection));
+            
+            if (mapper is null)
+                throw new ArgumentNullException(nameof(mapper));
+            
+            return mapper(collection);
+        }
     }
 
     /// <summary>
