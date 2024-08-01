@@ -55,5 +55,53 @@ namespace Hybel.ExtensionMethods
         {
             yield return item;
         }
+
+        /// <summary>
+        /// Conditionally chain do something with the <paramref name="item"/> if
+        /// the <paramref name="condition"/> is true.
+        /// </summary>
+        /// <param name="item">The item to conditionally chain.</param>
+        /// <param name="condition">The condition to check.</param>
+        /// <param name="action">The action to perform on the <paramref name="item"/>.</param>
+        /// <returns>The <paramref name="item"/>.</returns>
+        public static T Conditionally<T>(this T item, bool condition, Action<T> action)
+        {
+            if (condition)
+                action(item);
+
+            return item;
+        }
+
+        /// <summary>
+        /// Conditionally chain do something with the <paramref name="item"/> if
+        /// the <paramref name="condition"/> is true.
+        /// </summary>
+        /// <param name="item">The item to conditionally chain.</param>
+        /// <param name="condition">The condition to check.</param>
+        /// <param name="func">The function to perform on the <paramref name="item"/>.</param>
+        /// <returns>The <paramref name="item"/> or the result of <paramref name="func"/>.</returns>
+        public static T Conditionally<T>(this T item, bool condition, Func<T, T> func)
+        {
+            if (condition)
+                return func(item);
+
+            return item;
+        }
+
+        /// <summary>
+        /// Conditionally chain do something with the <paramref name="item"/> if
+        /// the <paramref name="predicate"/> is true.
+        /// </summary>
+        /// <param name="item">The item to conditionally chain.</param>
+        /// <param name="predicate">The predicate to check.</param>
+        /// <param name="action">The action to perform on the <paramref name="item"/>.</param>
+        /// <returns>The <paramref name="item"/>.</returns>
+        public static T Conditionally<T>(this T item, Predicate<T, bool> predicate, Func<T, T> result)
+        {
+            if (predicate(item))
+                return result(item);
+
+            return item;
+        }
     }
 }
