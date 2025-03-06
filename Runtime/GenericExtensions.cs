@@ -96,7 +96,7 @@ namespace Hybel.ExtensionMethods
         /// <param name="predicate">The predicate to check.</param>
         /// <param name="action">The action to perform on the <paramref name="item"/>.</param>
         /// <returns>The <paramref name="item"/>.</returns>
-        public static T Conditionally<T>(this T item, Predicate<T, bool> predicate, Func<T, T> result)
+        public static T Conditionally<T>(this T item, Predicate<T> predicate, Func<T, T> result)
         {
             if (predicate(item))
                 return result(item);
